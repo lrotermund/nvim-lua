@@ -10,7 +10,7 @@ local on_attach = function ()
 
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
     vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+    vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<cr>", opts)
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
     vim.keymap.set("n", "<leader>dj", vim.diagnostic.goto_next, opts)
     vim.keymap.set("n", "<leader>dk", vim.diagnostic.goto_prev, opts)
