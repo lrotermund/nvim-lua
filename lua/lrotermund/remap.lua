@@ -1,4 +1,3 @@
-
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv'")
@@ -26,9 +25,8 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 
 vim.keymap.set("n", "Q", "<nop>")
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
-vim.keymap.set("n", "<leader>f", function()
-    vim.lsp.buf.format()
-end)
+vim.keymap.set("v", "<leader>fl", vim.lsp.buf.format, { remap = false })
+vim.keymap.set("n", "<leader>fl", vim.lsp.buf.format, { remap = false })
 
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
@@ -38,3 +36,7 @@ vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
+vim.keymap.set("n", "<leader>cr", "<cmd>:let @+=expand(\"%\")<CR>")
+vim.keymap.set("n", "<leader>ca", "<cmd>:let @+=expand(\"%:p\")<CR>")
+vim.keymap.set("n", "<leader>cf", "<cmd>:let @+=expand(\"%:t\")<CR>")
+vim.keymap.set("n", "<leader>cd", "<cmd>:let @+=expand(\"%:p:h\")<CR>")
