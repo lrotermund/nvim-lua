@@ -31,6 +31,7 @@ lsp.ensure_installed({
 	'jsonls',
 	'yamlls',
 	'lua_ls',
+    'rust_analyzer',
 })
 
 local cmp = require('cmp')
