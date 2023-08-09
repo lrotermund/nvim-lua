@@ -1,6 +1,9 @@
 
 function MakeSomeColor(color)
-	color = color or "rose-pine"
+    -- Themes:
+    -- rose-pine
+    -- everforest
+	color = color or "everforest"
 	vim.cmd.colorscheme(color)
 
 	-- Transparant BG:
