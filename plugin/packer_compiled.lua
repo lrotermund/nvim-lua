@@ -84,6 +84,11 @@ _G.packer_plugins = {
     path = "/home/lukas/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
     url = "https://github.com/hrsh7th/cmp-nvim-lsp"
   },
+  everforest = {
+    loaded = true,
+    path = "/home/lukas/.local/share/nvim/site/pack/packer/start/everforest",
+    url = "https://github.com/sainnhe/everforest"
+  },
   harpoon = {
     loaded = true,
     path = "/home/lukas/.local/share/nvim/site/pack/packer/start/harpoon",
