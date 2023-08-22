@@ -13,11 +13,13 @@ return require('packer').startup(function(use)
     }
     use({ 'rose-pine/neovim', as = 'rose-pine' })
     use({ 'sainnhe/everforest', as = 'everforest' })
+    use({ 'blazkowolf/gruber-darker.nvim', as = 'gruber-darker' })
     use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
     use('nvim-treesitter/nvim-treesitter-context')
     use('ThePrimeagen/harpoon')
     use('mbbill/undotree')
     use('tpope/vim-fugitive')
+    use('shumphrey/fugitive-gitlab.vim')
     use {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v2.x',
