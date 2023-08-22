@@ -41,5 +41,5 @@ function InteractiveInsertClassSkeleton()
     vim.api.nvim_feedkeys('i' .. class_code, 'n', true)
 end
 
-vim.cmd([[command! -nargs=0 IFS lua InteractiveInsertFunctionSkeleton()]])
-vim.cmd([[command! -nargs=0 ICS lua InteractiveInsertClassSkeleton()]])
+vim.cmd([[command! -nargs=0 Ifs lua InteractiveInsertFunctionSkeleton()]])
+vim.cmd([[command! -nargs=0 Ics lua InteractiveInsertClassSkeleton()]])
