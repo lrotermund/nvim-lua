@@ -20,11 +20,23 @@ telescope.setup {
             "--column",
             "--smart-case",
             "--hidden",
+            "-l",
         },
     },
     pickers = {
         find_files = {
-            find_command = { 'rg', '--hidden', '--files' },
+            find_command = {
+                "rg",
+                "--color=never",
+                "--no-heading",
+                "--with-filename",
+                "--line-number",
+                "--column",
+                "--smart-case",
+                "--hidden",
+                "--files",
+                "-l",
+            },
         },
     },
 }
