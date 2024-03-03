@@ -1,3 +1,3 @@
-require("lrotermund.set")
-require("lrotermund.remap")
-require("lrotermund.snippets")
+require 'lrotermund.set'
+require 'lrotermund.remap'
+require 'lrotermund.snippets'
