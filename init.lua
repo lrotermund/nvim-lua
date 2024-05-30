@@ -1,89 +1,3 @@
---[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||        NVIM        ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know how the Neovim basics, you can skip this step)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not sure exactly what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or neovim features used in kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your nvim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -218,6 +132,14 @@ vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 -- vim.keymap.set('n', '<C-J>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 -- vim.keymap.set('n', '<C-K>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('n', '<leader>cr', '<cmd>:let @+=expand("%")<CR>')
+vim.keymap.set('n', '<leader>ca', '<cmd>:let @+=expand("%:p")<CR>')
+vim.keymap.set('n', '<leader>cf', '<cmd>:let @+=expand("%:t")<CR>')
+vim.keymap.set('n', '<leader>cd', '<cmd>:let @+=expand("%:p:h")<CR>')
+
+vim.keymap.set('n', '<C-K>', '<cmd>cnext<CR>zz')
+vim.keymap.set('n', '<C-J>', '<cmd>cprev<CR>zz')
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -247,6 +169,29 @@ local intelephense_license = function()
   f:close()
 
   return string.gsub(content, '%s+', '')
+end
+
+local full_width_ops = {
+  hidden = true,
+  file_ignore_patterns = { '.git' },
+  find_command = { 'rg', '--hidden', '--files' },
+
+  layout_strategy = 'vertical',
+  layout_options = {
+    preview_width = 1,
+  },
+  layout_config = {
+    preview_cutoff = 1, -- Preview should always show (unless previewer = false)
+
+    width = 100,
+    height = 100,
+  },
+}
+
+local full_width = function(func)
+  return function()
+    func(full_width_ops)
+  end
 end
 
 -- [[ Configure and install plugins ]]
@@ -449,16 +394,16 @@ require('lazy').setup {
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>sh', full_width(builtin.help_tags), { desc = '[S]earch [H]elp' })
+      vim.keymap.set('n', '<leader>sk', full_width(builtin.keymaps), { desc = '[S]earch [K]eymaps' })
+      vim.keymap.set('n', '<leader>sf', full_width(builtin.find_files), { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>ss', full_width(builtin.builtin), { desc = '[S]earch [S]elect Telescope' })
+      vim.keymap.set('n', '<leader>sw', full_width(builtin.grep_string), { desc = '[S]earch current [W]ord' })
+      vim.keymap.set('n', '<leader>sg', full_width(builtin.live_grep), { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>sd', full_width(builtin.diagnostics), { desc = '[S]earch [D]iagnostics' })
+      vim.keymap.set('n', '<leader>sr', full_width(builtin.resume), { desc = '[S]earch [R]esume' })
+      vim.keymap.set('n', '<leader>s.', full_width(builtin.oldfiles), { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader><leader>', full_width(builtin.buffers), { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -470,7 +415,7 @@ require('lazy').setup {
       end, { desc = '[/] Fuzzily search in current buffer' })
 
       -- Also possible to pass additional configuration options.
-      --  See `:help telescope.builtin.live_grep()` for information about particular keys
+      --  See `:help telescope.builtin.live_grep()` for information about particular keysini
       vim.keymap.set('n', '<leader>s/', function()
         builtin.live_grep {
           grep_open_files = true,
@@ -550,7 +495,7 @@ require('lazy').setup {
 
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+          map('gi', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
 
           -- Jump to the type of the word under your cursor.
           --  Useful when you're not sure what type a variable is and you want to see
@@ -642,6 +587,7 @@ require('lazy').setup {
         cssls = {},
         jsonls = {},
         yamlls = {},
+        htmx = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -708,16 +654,86 @@ require('lazy').setup {
       notify_on_error = false,
       format_on_save = {
         timeout_ms = 500,
-        lsp_fallback = true,
+        lsp_fallback = false,
       },
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
+      },
+      formatters = {
+        php_cs_fixer = {
+          inherit = false,
+          meta = {
+            url = 'https://github.com/PHP-CS-Fixer/PHP-CS-Fixer',
+            description = 'The PHP Coding Standards Fixer.',
+          },
+          exit_codes = { 0, 1 },
+          args = { 'fix' },
+          prepend_args = function(ctx)
+            local userHome = vim.fn.expand '$HOME/Repositories'
+            local userHomePos = ctx.filename:find(userHome)
+
+            if not userHomePos then
+              return { ctx.filename }
+            end
+
+            local relativeName = ctx.filename:sub(1, userHomePos - 1)
+            vim.print(relativeName)
+
+            return { relativeName }
+          end,
+          stdin = false,
+          command = function()
+            local function findProjectRoot(filePath)
+              local modulesPos = filePath:find '/modules/'
+              local srcPos = filePath:find '/src/'
+              local testsPos = filePath:find '/tests/'
+
+              local cutPos = modulesPos or srcPos or testsPos
+              if not cutPos then
+                error "The path contains neither 'src' nor 'tests'"
+              end
+
+              local rootPath = filePath:sub(1, cutPos - 1)
+              return rootPath
+            end
+
+            local currentFilePath = vim.api.nvim_buf_get_name(0)
+            local projectRoot = findProjectRoot(currentFilePath)
+            local composerJsonPath = projectRoot .. '/composer.json'
+
+            local file = io.open(composerJsonPath, 'r')
+            if not file then
+              error('File could not be opened: ' .. composerJsonPath)
+            end
+            local content = file:read '*a'
+            file:close()
+
+            local data, err = vim.json.decode(content)
+            if not data then
+              error('Error decoding JSON: ' .. err)
+            end
+
+            local phpVersionRequirement = data.require.php
+            if not phpVersionRequirement then
+              error 'PHP version not found in composer.json'
+            end
+
+            local version = phpVersionRequirement:match '%d+%.%d+'
+            version = string.gsub(version, '%.', '')
+
+            if not version then
+              error('PHP version could not be extracted from the string: ' .. phpVersionRequirement)
+            end
+
+            return vim.fn.expand('$HOME/bin/php' .. version .. 'cf')
+          end,
+          -- Conform can also run multiple formatters sequentially
+          -- python = { "isort", "black" },
+          --
+          -- You can use a sub-list to tell conform to run *until* a formatter
+          -- is found.
+          -- javascript = { { "prettierd", "prettier" } },
+        },
       },
     },
   },
@@ -880,7 +896,7 @@ require('lazy').setup {
 
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc' },
+        ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc', 'php', 'go', 'json', 'javascript', 'typescript', 'vue', 'yaml' },
         -- Autoinstall languages that are not installed
         auto_install = true,
         highlight = { enable = true },
@@ -919,3 +935,142 @@ require('lazy').setup {
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+function Is_php_or_go_file()
+  local path = vim.api.nvim_buf_get_name(0)
+  if not path:match '%.go' or not path:match '%.php$' then
+    print 'no Go or PHP file'
+
+    return false
+  end
+
+  return true
+end
+
+function Interactive_insert_function_skeleton()
+  if not Is_php_or_go_file then
+    return false
+  end
+
+  local path = vim.api.nvim_buf_get_name(0)
+  local function_name = vim.fn.input 'Choose a name for the function: '
+  local function_code = ''
+
+  if path:match '%.php' then
+    function_code = string.format('private function %s(): void\n{\n\n}', function_name)
+  else
+    function_code = string.format('func %s() {\n\t\n}', function_name)
+  end
+
+  vim.api.nvim_feedkeys('i' .. function_code, 'n', true)
+end
+
+function Interactive_insert_class_skeleton()
+  if not Is_php_or_go_file then
+    return false
+  end
+
+  local path = vim.api.nvim_buf_get_name(0)
+  local class_name = ''
+  local class_code = ''
+
+  if path:match '%.php' then
+    class_name = vim.fn.input 'Choose a name for the class: '
+    local namesspace_name = vim.fn.input 'Choose a namespace: '
+
+    class_code = string.format(
+      '<?php\n\ndeclare(strict_types=1);\n\nnamespace %s;\n\nfinal readonly class %s\n{\npublic function __construct()\n{\n}\n}',
+      namesspace_name,
+      class_name
+    )
+  else
+    class_name = vim.fn.input 'Choose a name for the struct: '
+    class_code = string.format('type %s struct {\n\t\n}', class_name)
+  end
+
+  vim.api.nvim_feedkeys('i' .. class_code, 'n', true)
+end
+
+function Goto_php_test()
+  -- /home/lukas/Repositories/foobar/src/Service/foo.php
+  -- --> /home/lukas/Repositories/foobar/tests/Service/fooTest.php
+  local path = vim.api.nvim_buf_get_name(0)
+
+  if not path:match '/src/' or not path:match '%.php$' then
+    print 'no PHP class'
+
+    return false
+  end
+
+  local testPath = string.gsub(string.gsub(path, '/src/', '/tests/'), '.php', 'Test.php')
+  local f = io.open(testPath, 'r')
+
+  if f then
+    f:close()
+    vim.cmd('edit ' .. testPath)
+  else
+    vim.cmd 'enew'
+    vim.cmd('file ' .. testPath)
+  end
+end
+
+function Goto_php_mockery_test()
+  -- /home/lukas/Repositories/foobar/src/Service/foo.php
+  -- --> /home/lukas/Repositories/foobar/tests/Service/fooMockeryTest.php
+  local path = vim.api.nvim_buf_get_name(0)
+
+  if not path:match '/src/' or not path:match '%.php$' then
+    print 'no PHP class'
+
+    return false
+  end
+
+  local testPath = string.gsub(string.gsub(path, '/src/', '/tests/'), '.php', 'MockeryTest.php')
+  local f = io.open(testPath, 'r')
+
+  if f then
+    f:close()
+    vim.cmd('edit ' .. testPath)
+  else
+    vim.cmd 'enew'
+    vim.cmd('file ' .. testPath)
+  end
+end
+
+function Goto_php_class()
+  -- /home/lukas/Repositories/foobar/tests/Service/fooTest.php
+  -- or /home/lukas/Repositories/foobar/tests/Service/fooMockeryTest.php
+  -- --> /home/lukas/Repositories/foobar/src/Service/foo.php
+  local path = vim.api.nvim_buf_get_name(0)
+
+  if not path:match '/tests/' or not path:match '%Test.php$' then
+    print 'no PHP test'
+
+    return false
+  end
+
+  local classPath = string.gsub(string.gsub(path, '/tests/', '/src/'), 'Test.php', '.php')
+  local f = io.open(classPath, 'r')
+
+  if f then
+    f:close()
+    vim.cmd('edit ' .. classPath)
+  else
+    local mockeryClassPath = string.gsub(string.gsub(path, '/tests/', '/src/'), 'MockeryTest.php', '.php')
+    local mf = io.open(mockeryClassPath, 'r')
+
+    if mf then
+      mf:close()
+      vim.cmd('edit ' .. mockeryClassPath)
+    else
+      vim.cmd 'enew'
+      vim.cmd('file ' .. classPath)
+    end
+  end
+end
+
+vim.cmd [[command! -nargs=0 Ifs lua Interactive_insert_function_skeleton()]]
+vim.cmd [[command! -nargs=0 Ics lua Interactive_insert_class_skeleton()]]
+vim.cmd [[command! -nargs=0 Ptest lua Goto_php_test()]]
+vim.cmd [[command! -nargs=0 Pmtest lua Goto_php_mockery_test()]]
+vim.cmd [[command! -nargs=0 Pclass lua Goto_php_class()]]
