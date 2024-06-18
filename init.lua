@@ -154,6 +154,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Make `$` part of a "Word" in PHP files.
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'php',
+  callback = function()
+    vim.bo.iskeyword = vim.bo.iskeyword .. ',$'
+  end,
+})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -579,6 +587,19 @@ require('lazy').setup {
         intelephense = {
           init_options = {
             licenceKey = intelephense_license(),
+          },
+          files = {
+            maxSize = {
+              default = 2000000,
+            },
+          },
+          environment = {
+            includePaths = {
+              'vendor/jetbrains/phpstorm-stubs',
+            },
+          },
+          stubs = {
+            'redis',
           },
         },
 
