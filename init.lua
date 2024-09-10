@@ -140,6 +140,8 @@ vim.keymap.set('n', '<leader>cd', '<cmd>:let @+=expand("%:p:h")<CR>')
 vim.keymap.set('n', '<C-K>', '<cmd>cnext<CR>zz')
 vim.keymap.set('n', '<C-J>', '<cmd>cprev<CR>zz')
 
+vim.keymap.set('i', '<C-[>', '<Esc>')
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -252,6 +254,10 @@ require('lazy').setup {
     config = function()
       vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
     end,
+  },
+
+  {
+    'christoomey/vim-tmux-navigator',
   },
 
   {
@@ -917,7 +923,23 @@ require('lazy').setup {
 
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc', 'php', 'go', 'json', 'javascript', 'typescript', 'vue', 'yaml' },
+        ensure_installed = {
+          'bash',
+          'c',
+          'html',
+          'lua',
+          'markdown',
+          'vim',
+          'vimdoc',
+          'php',
+          'go',
+          'json',
+          'javascript',
+          'typescript',
+          'vue',
+          'yaml',
+          'dockerfile',
+        },
         -- Autoinstall languages that are not installed
         auto_install = true,
         highlight = { enable = true },
@@ -930,6 +952,21 @@ require('lazy').setup {
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    end,
+  },
+
+  { -- Top attached code block context
+    'nvim-treesitter/nvim-treesitter-context',
+    config = function()
+      -- [[ Configure Treesitter-Context ]] See `:help nvim-treesitter-context`
+
+      require('treesitter-context').setup {
+        max_lines = 4, -- How many lines the window should span. Values <= 0 mean no limit.
+      }
+
+      vim.keymap.set('n', '[c', function()
+        require('treesitter-context').go_to_context()
+      end, { silent = true })
     end,
   },
 
@@ -1090,8 +1127,66 @@ function Goto_php_class()
   end
 end
 
+local function ask_confirmation(question)
+  local choice = vim.fn.confirm(question, '&Yes\n&No', 1)
+
+  if choice == 1 then
+    return true
+  else
+    return false
+  end
+end
+
+function Create_getter_setter()
+  local field = vim.fn.input 'field: '
+  local field_type = vim.fn.input 'type: '
+  local multiline = ask_confirmation 'use multiline functions?'
+
+  local template
+  if multiline == false then
+    template = [[
+
+    public function get%s(): %s
+    {
+        return $this->%s;
+    }
+
+    public function set%s(%s $%s): self
+    {
+        $this->%s = $%s;
+
+        return $this;
+    }]]
+  else
+    template = [[
+
+    public function get%s(): %s
+    {
+        return $this->%s;
+    }
+
+    public function set%s(
+      %s $%s,
+    ): self {
+        $this->%s = $%s;
+
+        return $this;
+    }]]
+  end
+
+  local getter_setter =
+    string.format(template, field:gsub('^%l', string.upper), field_type, field, field:gsub('^%l', string.upper), field_type, field, field, field)
+
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  vim.cmd 'normal! G'
+  local last_line = vim.fn.search('}', 'cb')
+  vim.fn.append(last_line - 1, vim.split(getter_setter, '\n'))
+  vim.api.nvim_win_set_cursor(0, cursor_pos)
+end
+
 vim.cmd [[command! -nargs=0 Ifs lua Interactive_insert_function_skeleton()]]
 vim.cmd [[command! -nargs=0 Ics lua Interactive_insert_class_skeleton()]]
 vim.cmd [[command! -nargs=0 Ptest lua Goto_php_test()]]
 vim.cmd [[command! -nargs=0 Pmtest lua Goto_php_mockery_test()]]
 vim.cmd [[command! -nargs=0 Pclass lua Goto_php_class()]]
+vim.cmd [[command! -nargs=0 CGS lua Create_getter_setter()]]
