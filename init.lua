@@ -183,8 +183,25 @@ end
 
 local full_width_ops = {
   hidden = true,
-  file_ignore_patterns = { '.git' },
-  find_command = { 'rg', '--hidden', '--files' },
+  file_ignore_patterns = { '.git', 'vendor', 'node_modules' },
+  find_command = {
+    'rg',
+    '--line-number',
+    '--hidden',
+    '--files',
+    '-l',
+  },
+  vimgrep_arguments = {
+    'rg',
+    '--color=never',
+    '--no-heading',
+    '--with-filename',
+    '--line-number',
+    '--column',
+    '--smart-case',
+    '--hidden',
+    '-l',
+  },
 
   layout_strategy = 'vertical',
   layout_options = {
