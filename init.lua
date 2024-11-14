@@ -649,6 +649,7 @@ require('lazy').setup {
         jsonls = {},
         yamlls = {},
         htmx = {},
+        clangd = {},
 
         lua_ls = {
           -- cmd = {...},
