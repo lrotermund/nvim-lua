@@ -189,7 +189,6 @@ local full_width_ops = {
     '--line-number',
     '--hidden',
     '--files',
-    '-l',
   },
   vimgrep_arguments = {
     'rg',
@@ -200,15 +199,14 @@ local full_width_ops = {
     '--column',
     '--smart-case',
     '--hidden',
-    '-l',
   },
 
   layout_strategy = 'vertical',
   layout_options = {
-    preview_width = 1,
+    preview_width = 0.5,
   },
   layout_config = {
-    preview_cutoff = 1, -- Preview should always show (unless previewer = false)
+    preview_cutoff = 40, -- Preview should always show (unless previewer = false)
 
     width = 100,
     height = 100,
