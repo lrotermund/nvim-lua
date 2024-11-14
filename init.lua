@@ -181,41 +181,58 @@ local intelephense_license = function()
   return string.gsub(content, '%s+', '')
 end
 
-local full_width_ops = {
-  hidden = true,
-  file_ignore_patterns = { '.git', 'vendor', 'node_modules' },
-  find_command = {
-    'rg',
-    '--line-number',
-    '--hidden',
-    '--files',
-  },
-  vimgrep_arguments = {
-    'rg',
-    '--color=never',
-    '--no-heading',
-    '--with-filename',
-    '--line-number',
-    '--column',
-    '--smart-case',
-    '--hidden',
-  },
+local function full_width_ops()
+  return {
+    hidden = true,
+    file_ignore_patterns = { '.git', 'vendor', 'node_modules' },
+    find_command = {
+      'rg',
+      '--line-number',
+      '--hidden',
+      '--files',
+    },
+    vimgrep_arguments = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case',
+      '--hidden',
+    },
+    glob_pattern = {},
+    layout_strategy = 'vertical',
+    layout_options = {
+      preview_width = 0.5,
+    },
+    layout_config = {
+      preview_cutoff = 40, -- Preview should always show (unless previewer = false)
 
-  layout_strategy = 'vertical',
-  layout_options = {
-    preview_width = 0.5,
-  },
-  layout_config = {
-    preview_cutoff = 40, -- Preview should always show (unless previewer = false)
+      width = 100,
+      height = 100,
+    },
+  }
+end
 
-    width = 100,
-    height = 100,
-  },
-}
+local function full_width(func, ops_modifiers)
+  ops_modifiers = ops_modifiers or {}
+  local default_ops = full_width_ops()
 
-local full_width = function(func)
+  for _, modifier in ipairs(ops_modifiers) do
+    default_ops = modifier(default_ops)
+  end
+
   return function()
-    func(full_width_ops)
+    func(default_ops)
+  end
+end
+
+local function with_glob(glob)
+  return function(ops)
+    table.insert(ops.glob_pattern, glob)
+
+    return ops
   end
 end
 
@@ -429,6 +446,8 @@ require('lazy').setup {
       vim.keymap.set('n', '<leader>ss', full_width(builtin.builtin), { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', full_width(builtin.grep_string), { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', full_width(builtin.live_grep), { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>scg', full_width(builtin.live_grep, { with_glob '!**/tests/**' }), { desc = '[S]earch code by [G]rep' })
+      vim.keymap.set('n', '<leader>stg', full_width(builtin.live_grep, { with_glob '**/tests/**' }), { desc = '[S]earch tests by [G]rep' })
       vim.keymap.set('n', '<leader>sd', full_width(builtin.diagnostics), { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', full_width(builtin.resume), { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', full_width(builtin.oldfiles), { desc = '[S]earch Recent Files ("." for repeat)' })
