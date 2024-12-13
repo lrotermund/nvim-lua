@@ -209,9 +209,14 @@ local function full_width_ops()
     layout_config = {
       preview_cutoff = 40, -- Preview should always show (unless previewer = false)
 
-      width = 100,
+      width = 200,
       height = 100,
     },
+    path_display = {
+      shorten = 4,
+    },
+    results_title = false,
+    fname_width = 100,
   }
 end
 
@@ -536,14 +541,14 @@ require('lazy').setup {
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-T>.
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+          map('gd', full_width(require('telescope.builtin').lsp_definitions), '[G]oto [D]efinition')
 
           -- Find references for the word under your cursor.
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+          map('gr', full_width(require('telescope.builtin').lsp_references), '[G]oto [R]eferences')
 
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gi', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+          map('gi', full_width(require('telescope.builtin').lsp_implementations), '[G]oto [I]mplementation')
 
           -- Jump to the type of the word under your cursor.
           --  Useful when you're not sure what type a variable is and you want to see
