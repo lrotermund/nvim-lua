@@ -1230,3 +1230,6 @@ vim.cmd [[command! -nargs=0 Ptest lua Goto_php_test()]]
 vim.cmd [[command! -nargs=0 Pmtest lua Goto_php_mockery_test()]]
 vim.cmd [[command! -nargs=0 Pclass lua Goto_php_class()]]
 vim.cmd [[command! -nargs=0 CGS lua Create_getter_setter()]]
+
+-- 80 col wrap:
+require 'lrotermund/wrap'
